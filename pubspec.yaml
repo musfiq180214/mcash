@@ -1,0 +1,54 @@
+name: mcash
+description: MCash - Your Digital Wallet for a Smarter Tomorrow.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State
+  flutter_riverpod: ^2.5.1
+
+  # Navigation
+  go_router: ^13.2.0
+
+  # Network
+  dio: ^5.4.1
+
+  # Storage
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  flutter_secure_storage: ^9.0.0
+
+  # i18n
+  easy_localization: ^3.0.8
+  intl: ^0.20.3
+
+  # Platform / UI
+  connectivity_plus: ^5.0.2
+  qr_flutter: ^4.1.0
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+  build_runner: ^2.4.8
+  flutter_gen_runner: ^5.4.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/translations/
+    - assets/images/
+
+flutter_gen:
+  output: lib/core/gen/
+  line_length: 80

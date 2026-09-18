@@ -1,0 +1,41 @@
+{
+  "app": { "name": "MCash", "tagline": "Fast • Safe • Always With You" },
+  "nav": { "home": "Home", "history": "History", "offers": "Offers", "profile": "Profile", "qr": "QR Pay" },
+  "home": {
+    "greeting": "Hi, {}",
+    "subtitle": "Your account is secured",
+    "balance": "Balance",
+    "add_money": "Add Money",
+    "services": "All payments, now simpler"
+  },
+  "service": {
+    "send_money": "Send Money",
+    "send_money_sub": "Instant & Secure",
+    "recharge": "Mobile Recharge",
+    "recharge_sub": "All Operators",
+    "bill": "Bill Payment",
+    "bill_sub": "Utilities & Services",
+    "cash_out": "Cash Out",
+    "cash_out_sub": "From Anywhere",
+    "qr_pay": "QR Pay",
+    "merchant_pay": "Merchant Pay",
+    "top_up": "Top Up Wallet",
+    "more": "More Services",
+    "more_sub": "Shops, Travel, Games & More"
+  },
+  "common": {
+    "amount": "Amount",
+    "proceed": "Proceed",
+    "pay_now": "Pay Now",
+    "mobile_number": "Mobile Number",
+    "note_optional": "Add a note (optional)",
+    "all": "All",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "retry": "Retry",
+    "no_internet": "No internet connection",
+    "no_internet_body": "Check your connection and try again."
+  },
+  "history": { "title": "Transaction History", "empty": "No transactions yet" },
+  "support": { "title": "Help & Support", "need_help": "Need Help?", "available": "We are here for you 24/7" }
+}
