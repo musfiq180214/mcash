@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../features/auth/data/auth_repository.dart';
+import '../../features/auth/data/i_auth_repository.dart';
+import '../../features/auth/provider/auth_provider.dart';
 import '../storage/hive_service.dart';
 import '../storage/secure_storage_service.dart';
 import 'auth_state.dart';
@@ -18,7 +19,7 @@ final authControllerProvider =
 /// here redirects the app without a screen having to push or pop anything.
 class AuthController extends StateNotifier<AuthState> {
   AuthController({
-    required AuthRepository repository,
+    required IAuthRepository repository,
     required SecureStorageService storage,
     required HiveService hive,
   })  : _repository = repository,
@@ -26,7 +27,7 @@ class AuthController extends StateNotifier<AuthState> {
         _hive = hive,
         super(const AuthState());
 
-  final AuthRepository _repository;
+  final IAuthRepository _repository;
   final SecureStorageService _storage;
   final HiveService _hive;
 

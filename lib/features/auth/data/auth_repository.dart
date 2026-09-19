@@ -1,37 +1,13 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../core/authHelper/auth_state.dart';
 import '../../../core/network/api_endpoints.dart';
 import '../../../core/network/api_result.dart';
 import '../../../core/network/network_exceptions.dart';
-import 'models/auth_session.dart';
+import '../domain/auth_session.dart';
+import 'i_auth_repository.dart';
 
-typedef AuthSessionResult = ApiResult<AuthSession>;
-
-/// Swap the implementation here to move from the bundled demo data to the
-/// live gateway — nothing above the repository layer changes.
-final authRepositoryProvider = Provider<AuthRepository>(
-  (ref) => DemoAuthRepository(),
-  // Live: (ref) => RemoteAuthRepository(ref.watch(dioClientProvider)),
-);
-
-abstract interface class AuthRepository {
-  Future<AuthSessionResult> login({required String mobile, required String pin});
-
-  Future<AuthSessionResult> signup({
-    required String name,
-    required String mobile,
-    required String pin,
-  });
-
-  Future<ApiResult<void>> forgotPassword({required String mobile});
-
-  Future<void> logout();
-}
-
-class RemoteAuthRepository implements AuthRepository {
-  const RemoteAuthRepository(this._dio);
+class AuthRepository implements IAuthRepository {
+  const AuthRepository(this._dio);
 
   final Dio _dio;
 
@@ -83,9 +59,7 @@ class RemoteAuthRepository implements AuthRepository {
   }
 }
 
-/// Offline implementation used by the demo build. Any 11-digit number with a
-/// 4-digit PIN signs in as the seeded account.
-class DemoAuthRepository implements AuthRepository {
+class DemoAuthRepository implements IAuthRepository {
   static const _delay = Duration(milliseconds: 700);
 
   @override

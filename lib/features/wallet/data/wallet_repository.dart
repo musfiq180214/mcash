@@ -1,27 +1,15 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../core/network/api_result.dart';
 import '../../../core/network/network_exceptions.dart';
 import '../../../core/storage/hive_service.dart';
-import 'models/transaction.dart';
-import 'models/wallet_snapshot.dart';
-
-final walletRepositoryProvider = Provider<WalletRepository>(
-  (ref) => LocalWalletRepository(ref.watch(hiveServiceProvider)),
-);
-
-abstract interface class WalletRepository {
-  Future<ApiResult<WalletSnapshot>> loadWallet();
-
-  /// Applies a transaction and returns the wallet as it stands afterwards.
-  Future<ApiResult<WalletSnapshot>> commit(TransactionModel transaction);
-}
+import '../domain/transaction.dart';
+import '../domain/wallet_snapshot.dart';
+import 'i_wallet_repository.dart';
 
 /// Local-first wallet. Every flow commits here, so balance and history stay
 /// consistent offline; a remote implementation can replace it without any
 /// change above this layer.
-class LocalWalletRepository implements WalletRepository {
-  LocalWalletRepository(this._hive);
+class WalletRepository implements IWalletRepository {
+  WalletRepository(this._hive);
 
   final HiveService _hive;
 
