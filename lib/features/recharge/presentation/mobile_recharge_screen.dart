@@ -4,11 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/navigation/app_routes.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/amount_chips.dart';
 import '../../../core/widgets/app_text_field.dart';
+import '../../../core/widgets/contacts_list.dart';
 import '../../../core/widgets/primary_button.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../../core/widgets/selectable_tile.dart';
@@ -119,6 +121,14 @@ class _MobileRechargeScreenState extends ConsumerState<MobileRechargeScreen> {
                       maxLength: 11,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       validator: Validators.mobile,
+                      suffix: IconButton(
+                        icon: const Icon(
+                          Icons.person_outline_rounded,
+                          color: AppColors.textSecondary,
+                          size: 20,
+                        ),
+                        onPressed: _pickFromContacts,
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     AmountField(
@@ -144,6 +154,10 @@ class _MobileRechargeScreenState extends ConsumerState<MobileRechargeScreen> {
                   ],
                 ),
               ),
+              const SizedBox(height: AppSpacing.lg),
+              ContactsList(
+                onContactSelected: _onContactSelected,
+              ),
               const SizedBox(height: AppSpacing.xxl),
               PrimaryButton(
                 label: 'Proceed',
@@ -155,5 +169,53 @@ class _MobileRechargeScreenState extends ConsumerState<MobileRechargeScreen> {
         ),
       ),
     );
+  }
+
+  void _onContactSelected(String number) {
+    setState(() {
+      _mobileController.text = number;
+      _mobileController.selection = TextSelection.fromPosition(
+        TextPosition(offset: number.length),
+      );
+    });
+    _autoDetectOperator(number);
+  }
+
+  void _autoDetectOperator(String number) {
+    final cleaned = cleanPhoneNumber(number);
+    if (cleaned.length >= 3) {
+      final prefix = cleaned.substring(0, 3);
+      MobileOperator? detected;
+      if (prefix == '017' || prefix == '013') {
+        detected = MobileOperator.all.firstWhere((o) => o.id == 'gp',
+            orElse: () => MobileOperator.all.first);
+      } else if (prefix == '018' || prefix == '016') {
+        detected = MobileOperator.all.firstWhere((o) => o.id == 'robi',
+            orElse: () => MobileOperator.all.first);
+      } else if (prefix == '019' || prefix == '014') {
+        detected = MobileOperator.all.firstWhere((o) => o.id == 'bl',
+            orElse: () => MobileOperator.all.first);
+      } else if (prefix == '015') {
+        detected = MobileOperator.all.firstWhere((o) => o.id == 'teletalk',
+            orElse: () => MobileOperator.all.first);
+      }
+      if (detected != null) {
+        ref.read(rechargeProvider.notifier).selectOperator(detected);
+      }
+    }
+  }
+
+  Future<void> _pickFromContacts() async {
+    final number = await pickContactFromDevice();
+    if (!mounted) return;
+    if (number != null) {
+      _onContactSelected(number);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a contact from the list below.'),
+        ),
+      );
+    }
   }
 }

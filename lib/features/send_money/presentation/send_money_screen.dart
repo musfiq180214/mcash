@@ -11,6 +11,7 @@ import '../../../core/widgets/amount_chips.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/primary_button.dart';
 import '../../../core/widgets/section_card.dart';
+import '../../../core/widgets/contacts_list.dart';
 import '../../wallet/provider/wallet_provider.dart';
 import '../provider/send_money_provider.dart';
 
@@ -103,7 +104,7 @@ class _SendMoneyScreenState extends ConsumerState<SendMoneyScreen> {
                           color: AppColors.textSecondary,
                           size: 20,
                         ),
-                        onPressed: () => _pickFromContacts(context),
+                        onPressed: _pickFromContacts,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.lg),
@@ -134,6 +135,12 @@ class _SendMoneyScreenState extends ConsumerState<SendMoneyScreen> {
                   ],
                 ),
               ),
+              if (state.method == SendMoneyMethod.mobileNumber) ...[
+                const SizedBox(height: AppSpacing.lg),
+                ContactsList(
+                  onContactSelected: _onContactSelected,
+                ),
+              ],
               const SizedBox(height: AppSpacing.xxl),
               PrimaryButton(
                 label: 'Send Money',
@@ -147,11 +154,26 @@ class _SendMoneyScreenState extends ConsumerState<SendMoneyScreen> {
     );
   }
 
-  void _pickFromContacts(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Contact picker needs the contacts permission.'),
-      ),
-    );
+  void _onContactSelected(String number) {
+    setState(() {
+      _recipientController.text = number;
+      _recipientController.selection = TextSelection.fromPosition(
+        TextPosition(offset: number.length),
+      );
+    });
+  }
+
+  Future<void> _pickFromContacts() async {
+    final number = await pickContactFromDevice();
+    if (!mounted) return;
+    if (number != null) {
+      _onContactSelected(number);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a contact from the list below.'),
+        ),
+      );
+    }
   }
 }

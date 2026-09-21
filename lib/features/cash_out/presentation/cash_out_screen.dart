@@ -11,6 +11,7 @@ import '../../../core/utils/formatters.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/amount_chips.dart';
 import '../../../core/widgets/app_text_field.dart';
+import '../../../core/widgets/contacts_list.dart';
 import '../../../core/widgets/primary_button.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../../core/widgets/selectable_tile.dart';
@@ -112,6 +113,14 @@ class _CashOutScreenState extends ConsumerState<CashOutScreen> {
                       maxLength: 11,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       validator: Validators.mobile,
+                      suffix: IconButton(
+                        icon: const Icon(
+                          Icons.person_outline_rounded,
+                          color: AppColors.textSecondary,
+                          size: 20,
+                        ),
+                        onPressed: _pickFromContacts,
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     AmountField(
@@ -145,6 +154,11 @@ class _CashOutScreenState extends ConsumerState<CashOutScreen> {
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
+              ContactsList(
+                title: 'Contacts / Agents',
+                onContactSelected: _onContactSelected,
+              ),
+              const SizedBox(height: AppSpacing.lg),
               _FeeSummary(
                 fee: state.fee,
                 total: state.total,
@@ -160,6 +174,29 @@ class _CashOutScreenState extends ConsumerState<CashOutScreen> {
         ),
       ),
     );
+  }
+
+  void _onContactSelected(String number) {
+    setState(() {
+      _agentController.text = number;
+      _agentController.selection = TextSelection.fromPosition(
+        TextPosition(offset: number.length),
+      );
+    });
+  }
+
+  Future<void> _pickFromContacts() async {
+    final number = await pickContactFromDevice();
+    if (!mounted) return;
+    if (number != null) {
+      _onContactSelected(number);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a contact from the list below.'),
+        ),
+      );
+    }
   }
 }
 
