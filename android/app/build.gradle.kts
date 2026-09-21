@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.mcash"
-    compileSdk = 34
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -20,7 +20,7 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
-        targetSdk = 34
+        targetSdk = 36
         // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
         // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)
         // You can force using the value of versionCode by specifying the `-P force-version-code-ignoring-abi=true`
@@ -29,18 +29,32 @@ android {
         versionName = flutter.versionName
     }
 
-    flavorDimensions += "mode"
+    buildFeatures {
+        resValues = true
+    }
+
+    flavorDimensions.add("app")
     productFlavors {
-        create("dev") {
-            dimension = "mode"
-            applicationIdSuffix = ".dev"
-        }
         create("staging") {
-            dimension = "mode"
+            dimension = "app"
             applicationIdSuffix = ".staging"
+            versionNameSuffix = "-staging"
+            resValue("string", "app_name", "MCash Staging")
         }
-        create("prod") {
-            dimension = "mode"
+        create("production") {
+            dimension = "app"
+            resValue("string", "app_name", "MCash")
+        }
+    }
+
+    project.afterEvaluate {
+        tasks.filter { it.name.startsWith("compileFlutterBuild") }.forEach { task ->
+            val flavor = task.name.substringAfter("compileFlutterBuild").lowercase()
+            if (flavor.contains("staging")) {
+                (task as? com.flutter.gradle.tasks.FlutterTask)?.let { it.targetPath = "lib/main_staging.dart" }
+            } else if (flavor.contains("production")) {
+                (task as? com.flutter.gradle.tasks.FlutterTask)?.let { it.targetPath = "lib/main_production.dart" }
+            }
         }
     }
 

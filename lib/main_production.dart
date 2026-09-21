@@ -1,4 +1,14 @@
-import 'bootstrap.dart';
-import 'core/config/flavor_config.dart';
+import 'core/utils/enums.dart';
+import 'flavor_config.dart';
+import 'main.dart';
+import 'core/constants/urls.dart';
 
-Future<void> main() => bootstrap(Flavor.production);
+void main() async {
+ FlavorConfig.instantiate(
+   flavor: Flavor.production,
+   baseUrl: baseUrlProduction,
+   appTitle: 'MCash',
+   enableLogging: false,
+ );
+ await mcash();
+}

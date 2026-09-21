@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mcash/features/wallet/data/models/transaction.dart';
-import 'package:mcash/features/wallet/data/models/wallet_snapshot.dart';
+import 'package:mcash/features/wallet/domain/transaction.dart';
+import 'package:mcash/features/wallet/domain/wallet_snapshot.dart';
 
 void main() {
   group('TransactionType', () {

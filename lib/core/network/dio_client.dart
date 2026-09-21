@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../config/flavor_config.dart';
+import '../../flavor_config.dart';
 import '../storage/secure_storage_service.dart';
 import 'interceptors/app_interceptors.dart';
 

@@ -20,24 +20,26 @@ class SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: padding,
-      decoration: BoxDecoration(
-        color: AppColors.surface,
+    return Material(
+      color: AppColors.surface,
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.border),
+        side: const BorderSide(color: AppColors.border),
       ),
-      child: title == null
-          ? child
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title!, style: AppTypography.sectionTitle),
-                const SizedBox(height: AppSpacing.lg),
-                child,
-              ],
-            ),
+      child: Padding(
+        padding: padding,
+        child: title == null
+            ? child
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title!, style: AppTypography.sectionTitle),
+                  const SizedBox(height: AppSpacing.lg),
+                  child,
+                ],
+              ),
+      ),
     );
   }
 }

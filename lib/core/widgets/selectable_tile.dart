@@ -95,40 +95,43 @@ class NavigationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      leading: Container(
-        height: 38,
-        width: 38,
-        decoration: BoxDecoration(
-          color: (iconColor ?? AppColors.primary).withOpacity(0.1),
-          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-        ),
-        child: Icon(icon, size: 19, color: iconColor ?? AppColors.primary),
-      ),
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: AppColors.textPrimary,
-        ),
-      ),
-      subtitle: subtitle == null
-          ? null
-          : Text(
-              subtitle!,
-              style: const TextStyle(
-                fontSize: 12,
-                color: AppColors.textSecondary,
-              ),
-            ),
-      trailing: trailing ??
-          const Icon(
-            Icons.chevron_right_rounded,
-            color: AppColors.textTertiary,
+    return Material(
+      color: Colors.transparent,
+      child: ListTile(
+        onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+        leading: Container(
+          height: 38,
+          width: 38,
+          decoration: BoxDecoration(
+            color: (iconColor ?? AppColors.primary).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           ),
+          child: Icon(icon, size: 19, color: iconColor ?? AppColors.primary),
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        subtitle: subtitle == null
+            ? null
+            : Text(
+                subtitle!,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+        trailing: trailing ??
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.textTertiary,
+            ),
+      ),
     );
   }
 }
