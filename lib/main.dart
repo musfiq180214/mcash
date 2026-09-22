@@ -5,6 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'core/navigation/app_navigator.dart';
 import 'core/navigation/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_provider.dart';
 import 'core/storage/hive_service.dart';
 import 'flavor_config.dart';
 
@@ -39,11 +40,14 @@ class MyApp extends ConsumerWidget {
  @override
  Widget build(BuildContext context, WidgetRef ref) {
    final router = ref.watch(routerProvider);
+   final themeMode = ref.watch(themeModeProvider);
 
    return MaterialApp.router(
      title: FlavorConfig.instance.appTitle,
      debugShowCheckedModeBanner: !FlavorConfig.isProduction(),
      theme: AppTheme.light,
+     darkTheme: AppTheme.dark,
+     themeMode: themeMode,
      routerConfig: router,
      scaffoldMessengerKey: AppNavigator.scaffoldMessengerKey,
      supportedLocales: context.supportedLocales,

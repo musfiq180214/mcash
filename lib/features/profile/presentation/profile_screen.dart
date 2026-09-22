@@ -8,6 +8,7 @@ import '../../../core/navigation/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/theme/theme_provider.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/selectable_tile.dart';
 
@@ -17,6 +18,8 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authControllerProvider).user;
+    final themeMode = ref.watch(themeModeProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -36,15 +39,15 @@ class ProfileScreen extends ConsumerWidget {
               children: [
                 CircleAvatar(
                   radius: 28,
-                  backgroundColor: AppColors.primarySoft,
+                  backgroundColor: isDark ? Colors.white.withOpacity(0.1) : AppColors.primarySoft,
                   child: Text(
                     (user?.name.isNotEmpty ?? false)
                         ? user!.name.substring(0, 1).toUpperCase()
                         : 'M',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.primary,
+                      color: isDark ? AppColors.cyberBlue : AppColors.primary,
                     ),
                   ),
                 ),
@@ -55,12 +58,16 @@ class ProfileScreen extends ConsumerWidget {
                     children: [
                       Text(
                         user?.name ?? 'MCash user',
-                        style: AppTypography.sectionTitle,
+                        style: AppTypography.sectionTitle.copyWith(
+                          color: isDark ? Colors.white : AppColors.textPrimary,
+                        ),
                       ),
                       const SizedBox(height: 2),
                       Text(
                         Formatters.maskedMobile(user?.mobile ?? ''),
-                        style: AppTypography.label,
+                        style: AppTypography.label.copyWith(
+                          color: isDark ? Colors.white70 : AppColors.textSecondary,
+                        ),
                       ),
                       if (user?.isVerified ?? false) ...[
                         const SizedBox(height: AppSpacing.sm),
@@ -123,6 +130,17 @@ class ProfileScreen extends ConsumerWidget {
                       ? 'বাংলা'
                       : 'English',
                   onTap: () => _toggleLanguage(context),
+                ),
+                NavigationTile(
+                  title: 'Dark Mode',
+                  icon: Icons.dark_mode_outlined,
+                  trailing: Switch(
+                    value: themeMode == ThemeMode.dark,
+                    onChanged: (val) =>
+                        ref.read(themeModeProvider.notifier).toggle(),
+                    activeColor: AppColors.cyberBlue,
+                  ),
+                  onTap: () => ref.read(themeModeProvider.notifier).toggle(),
                 ),
               ],
             ),
@@ -194,19 +212,26 @@ class _Group extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Material(
-      color: AppColors.surface,
+      color: Theme.of(context).colorScheme.surface,
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        side: const BorderSide(color: AppColors.border),
+        side: BorderSide(
+          color: isDark ? Colors.white.withOpacity(0.1) : AppColors.border,
+        ),
       ),
       child: Column(
         children: [
           for (var i = 0; i < children.length; i++) ...[
             children[i],
             if (i != children.length - 1)
-              const Divider(indent: AppSpacing.lg),
+              Divider(
+                indent: AppSpacing.lg,
+                color: isDark ? Colors.white.withOpacity(0.1) : AppColors.border,
+              ),
           ],
         ],
       ),

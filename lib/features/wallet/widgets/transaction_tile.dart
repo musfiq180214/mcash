@@ -16,6 +16,7 @@ class TransactionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDebit = transaction.type.isDebit;
     final accent = _accentFor(transaction.type);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return InkWell(
       onTap: onTap,
@@ -42,10 +43,10 @@ class TransactionTile extends StatelessWidget {
                 children: [
                   Text(
                     transaction.type.label,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                      color: isDark ? Colors.white : AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -53,9 +54,9 @@ class TransactionTile extends StatelessWidget {
                     transaction.counterparty,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.textSecondary,
+                      color: isDark ? Colors.white70 : AppColors.textSecondary,
                     ),
                   ),
                 ],
@@ -76,9 +77,9 @@ class TransactionTile extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   Formatters.transactionDate(transaction.createdAt),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11,
-                    color: AppColors.textTertiary,
+                    color: isDark ? Colors.white38 : AppColors.textTertiary,
                   ),
                 ),
               ],

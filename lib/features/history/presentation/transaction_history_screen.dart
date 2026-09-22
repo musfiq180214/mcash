@@ -20,6 +20,7 @@ class TransactionHistoryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final filter = ref.watch(historyFilterProvider);
     final transactions = ref.watch(filteredHistoryProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -41,11 +42,11 @@ class TransactionHistoryScreen extends ConsumerWidget {
                   TextField(
                     onChanged: (value) =>
                         ref.read(historyQueryProvider.notifier).state = value,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: 'Search by number or service',
                       prefixIcon: Icon(
                         Icons.search_rounded,
-                        color: AppColors.textTertiary,
+                        color: isDark ? Colors.white54 : AppColors.textTertiary,
                       ),
                     ),
                   ),
@@ -64,7 +65,7 @@ class TransactionHistoryScreen extends ConsumerWidget {
               child: transactions.isEmpty
                   ? const _EmptyHistory()
                   : RefreshIndicator(
-                      color: AppColors.primary,
+                      color: isDark ? AppColors.cyberBlue : AppColors.primary,
                       onRefresh: () =>
                           ref.read(walletProvider.notifier).load(),
                       child: ListView.separated(
@@ -81,11 +82,15 @@ class TransactionHistoryScreen extends ConsumerWidget {
                           final transaction = transactions[index];
                           return Container(
                             decoration: BoxDecoration(
-                              color: AppColors.surface,
+                              color: Theme.of(context).colorScheme.surface,
                               borderRadius: BorderRadius.circular(
                                 AppSpacing.radiusMd,
                               ),
-                              border: Border.all(color: AppColors.border),
+                              border: Border.all(
+                                color: isDark
+                                    ? Colors.white.withOpacity(0.1)
+                                    : AppColors.border,
+                              ),
                             ),
                             child: TransactionTile(
                               transaction: transaction,
@@ -103,9 +108,11 @@ class TransactionHistoryScreen extends ConsumerWidget {
   }
 
   void _showDetail(BuildContext context, TransactionModel transaction) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     showModalBottomSheet<void>(
       context: context,
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppSpacing.radiusXl),
@@ -117,11 +124,18 @@ class TransactionHistoryScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(transaction.type.label, style: AppTypography.sectionTitle),
+            Text(
+              transaction.type.label,
+              style: AppTypography.sectionTitle.copyWith(
+                color: isDark ? Colors.white : AppColors.textPrimary,
+              ),
+            ),
             const SizedBox(height: AppSpacing.xs),
             Text(
               Formatters.money(transaction.amount),
-              style: AppTypography.amount,
+              style: AppTypography.amount.copyWith(
+                color: isDark ? Colors.white : AppColors.textPrimary,
+              ),
             ),
             const SizedBox(height: AppSpacing.lg),
             _DetailRow(label: 'To', value: transaction.counterparty),
@@ -160,20 +174,27 @@ class _DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: AppTypography.label),
+          Text(
+            label,
+            style: AppTypography.label.copyWith(
+              color: isDark ? Colors.white70 : AppColors.textSecondary,
+            ),
+          ),
           Flexible(
             child: Text(
               value,
               textAlign: TextAlign.right,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: isDark ? Colors.white : AppColors.textPrimary,
               ),
             ),
           ),

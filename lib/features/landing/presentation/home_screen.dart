@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/authHelper/auth_controller.dart';
 import '../../../core/navigation/app_routes.dart';
+import '../../../core/services/haptic_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/widgets/glass_card.dart';
 import '../../wallet/provider/wallet_provider.dart';
 import '../../wallet/widgets/transaction_tile.dart';
 import '../widgets/balance_card.dart';
@@ -21,72 +23,120 @@ class HomeScreen extends ConsumerWidget {
     final user = ref.watch(authControllerProvider).user;
     final wallet = ref.watch(walletProvider);
     final recent = ref.watch(recentTransactionsProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: RefreshIndicator(
-        color: AppColors.primary,
+        color: AppColors.cyberBlue,
         onRefresh: () => ref.read(walletProvider.notifier).load(),
-        child: ListView(
-          padding: EdgeInsets.zero,
+        child: Stack(
           children: [
-            _Header(
-              name: user?.name ?? 'there',
-              balance: wallet.snapshot.balance,
-              isLoading: wallet.isLoading,
-              onAddMoney: () => context.push(AppRoutes.topUp),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.lg,
-                AppSpacing.xl,
-                AppSpacing.lg,
-                120,
+            // Decorative background elements
+            Positioned(
+              top: -100,
+              right: -100,
+              child: Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.cyberBlue.withOpacity(0.15),
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ServiceGrid(
-                    onMore: () => _showMoreServices(context),
+            ),
+            Positioned(
+              top: 200,
+              left: -50,
+              child: Container(
+                width: 200,
+                height: 200,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.cyberViolet.withOpacity(0.1),
+                ),
+              ),
+            ),
+            ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                _Header(
+                  name: user?.name ?? 'there',
+                  balance: wallet.snapshot.balance,
+                  isLoading: wallet.isLoading,
+                  onAddMoney: () {
+                    HapticService.light();
+                    context.push(AppRoutes.topUp);
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.lg,
+                    AppSpacing.xl,
+                    AppSpacing.lg,
+                    120,
                   ),
-                  const SizedBox(height: AppSpacing.xl),
-                  PromoBanner(onTap: () => context.go(AppRoutes.offers)),
-                  const SizedBox(height: AppSpacing.xl),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Recent activity',
-                        style: AppTypography.sectionTitle,
+                      ServiceGrid(
+                        onMore: () {
+                          HapticService.selection();
+                          _showMoreServices(context);
+                        },
                       ),
-                      TextButton(
-                        onPressed: () => context.go(AppRoutes.history),
-                        child: const Text('See all'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  if (recent.isEmpty)
-                    const _EmptyActivity()
-                  else
-                    Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.surface,
-                        borderRadius:
-                            BorderRadius.circular(AppSpacing.radiusLg),
-                        border: Border.all(color: AppColors.border),
-                      ),
-                      child: Column(
+                      const SizedBox(height: AppSpacing.xl),
+                      PromoBanner(onTap: () {
+                        HapticService.light();
+                        context.go(AppRoutes.offers);
+                      }),
+                      const SizedBox(height: AppSpacing.xl),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          for (var i = 0; i < recent.length; i++) ...[
-                            TransactionTile(transaction: recent[i]),
-                            if (i != recent.length - 1)
-                              const Divider(indent: AppSpacing.lg),
-                          ],
+                          Text(
+                            'Recent activity',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: isDark ? Colors.white : AppColors.textPrimary,
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              HapticService.selection();
+                              context.go(AppRoutes.history);
+                            },
+                            child: const Text(
+                              'See all',
+                              style: TextStyle(color: AppColors.cyberBlue),
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                ],
-              ),
+                      const SizedBox(height: AppSpacing.sm),
+                      if (recent.isEmpty)
+                        const _EmptyActivity()
+                      else
+                        GlassCard(
+                          opacity: 0.05,
+                          child: Column(
+                            children: [
+                              for (var i = 0; i < recent.length; i++) ...[
+                                TransactionTile(transaction: recent[i]),
+                                if (i != recent.length - 1)
+                                  Divider(
+                                    indent: AppSpacing.lg,
+                                    color: Colors.white.withOpacity(0.1),
+                                  ),
+                              ],
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -152,30 +202,38 @@ class _Header extends StatelessWidget {
         AppSpacing.lg,
         AppSpacing.xl,
       ),
-      decoration: const BoxDecoration(
-        gradient: AppColors.headerGradient,
-        borderRadius: BorderRadius.vertical(
+      decoration: BoxDecoration(
+        gradient: AppColors.cyberGradient,
+        borderRadius: const BorderRadius.vertical(
           bottom: Radius.circular(AppSpacing.radiusXl),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.cyberBlue.withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
       child: Column(
         children: [
           Row(
             children: [
               Container(
-                height: 34,
-                width: 34,
+                height: 38,
+                width: 38,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                  border: Border.all(color: Colors.white.withOpacity(0.3)),
                 ),
                 child: const Center(
                   child: Text(
                     'M',
                     style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.primary,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -184,36 +242,49 @@ class _Header extends StatelessWidget {
               const Text(
                 'MCash',
                 style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
                   color: Colors.white,
+                  letterSpacing: 0.5,
                 ),
               ),
               const Spacer(),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  HapticService.selection();
+                },
                 icon: const Icon(
                   Icons.notifications_none_rounded,
                   color: Colors.white,
                 ),
               ),
               IconButton(
-                onPressed: onAddMoney,
-                icon: const Icon(Icons.add_circle_outline, color: Colors.white),
+                onPressed: () {
+                  HapticService.selection();
+                },
+                icon: const Icon(Icons.grid_view_rounded, color: Colors.white),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.lg),
           Row(
             children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: Colors.white.withOpacity(0.25),
-                child: Text(
-                  name.isEmpty ? 'M' : name.substring(0, 1).toUpperCase(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
+              Container(
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white.withOpacity(0.5)),
+                ),
+                child: CircleAvatar(
+                  radius: 22,
+                  backgroundColor: Colors.white.withOpacity(0.25),
+                  child: Text(
+                    name.isEmpty ? 'M' : name.substring(0, 1).toUpperCase(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                    ),
                   ),
                 ),
               ),
@@ -225,16 +296,17 @@ class _Header extends StatelessWidget {
                     Text(
                       'Hi, $name',
                       style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
                         color: Colors.white,
                       ),
                     ),
                     Text(
-                      'আপনার অ্যাকাউন্ট নিরাপদ আছে',
+                      'Futuristic Wallet Active',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.white.withOpacity(0.85),
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withOpacity(0.7),
                       ),
                     ),
                   ],
@@ -242,7 +314,7 @@ class _Header extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: AppSpacing.xl),
           BalanceCard(
             balance: balance,
             isLoading: isLoading,

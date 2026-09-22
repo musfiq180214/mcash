@@ -25,6 +25,7 @@ class OffersScreen extends ConsumerWidget {
     final offers = ref.watch(filteredOffersProvider);
     final matchIndex = _filters.indexWhere((entry) => entry.$2 == filter);
     final selectedIndex = matchIndex < 0 ? 0 : matchIndex;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -51,12 +52,14 @@ class OffersScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.lg),
             if (offers.isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
                 child: Center(
                   child: Text(
                     'No running offers in this category.',
-                    style: AppTypography.body,
+                    style: AppTypography.body.copyWith(
+                      color: isDark ? Colors.white70 : AppColors.textPrimary,
+                    ),
                   ),
                 ),
               )
@@ -136,12 +139,16 @@ class _OfferTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(
+          color: isDark ? Colors.white.withOpacity(0.1) : AppColors.border,
+        ),
       ),
       child: Row(
         children: [
@@ -161,24 +168,26 @@ class _OfferTile extends StatelessWidget {
               children: [
                 Text(
                   offer.title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                    color: isDark ? Colors.white : AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   '${Formatters.compactMoney(offer.cashback)} cashback',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12.5,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
+                    color: isDark ? AppColors.cyberBlue : AppColors.primary,
                   ),
                 ),
                 Text(
                   'Valid till ${Formatters.shortDate(offer.validTill)}',
-                  style: AppTypography.caption,
+                  style: AppTypography.caption.copyWith(
+                    color: isDark ? Colors.white54 : AppColors.textTertiary,
+                  ),
                 ),
               ],
             ),

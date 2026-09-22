@@ -4,6 +4,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/formatters.dart';
+import '../../../core/widgets/glass_card.dart';
 
 /// The balance is the first thing a wallet user looks for, so it gets the
 /// darkest surface on the screen and the largest type in the app.
@@ -28,14 +29,10 @@ class _BalanceCardState extends State<BalanceCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GlassCard(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.lg,
-      ),
-      decoration: BoxDecoration(
-        gradient: AppColors.balanceGradient,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       ),
       child: Row(
         children: [
@@ -77,7 +74,16 @@ class _BalanceCardState extends State<BalanceCard> {
                 else
                   Text(
                     _isHidden ? '৳ ••••••' : Formatters.money(widget.balance),
-                    style: AppTypography.balance,
+                    style: AppTypography.balance.copyWith(
+                      color: Colors.white,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
                   ),
               ],
             ),

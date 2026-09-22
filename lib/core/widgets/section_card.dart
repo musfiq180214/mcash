@@ -20,12 +20,16 @@ class SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Material(
-      color: AppColors.surface,
+      color: Theme.of(context).colorScheme.surface,
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        side: const BorderSide(color: AppColors.border),
+        side: BorderSide(
+          color: isDark ? Colors.white.withOpacity(0.1) : AppColors.border,
+        ),
       ),
       child: Padding(
         padding: padding,
@@ -61,14 +65,18 @@ class SegmentedTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppColors.field,
+        color: isDark ? Colors.white.withOpacity(0.05) : AppColors.field,
         borderRadius: BorderRadius.circular(
           isPill ? AppSpacing.pill : AppSpacing.radiusMd,
         ),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(
+          color: isDark ? Colors.white.withOpacity(0.1) : AppColors.border,
+        ),
       ),
       child: Row(
         children: [
@@ -83,7 +91,7 @@ class SegmentedTabs extends StatelessWidget {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: i == selectedIndex
-                        ? AppColors.primary
+                        ? (isDark ? AppColors.cyberBlue : AppColors.primary)
                         : Colors.transparent,
                     borderRadius: BorderRadius.circular(
                       isPill ? AppSpacing.pill : AppSpacing.radiusSm,
@@ -96,7 +104,7 @@ class SegmentedTabs extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                       color: i == selectedIndex
                           ? Colors.white
-                          : AppColors.textSecondary,
+                          : (isDark ? Colors.white.withOpacity(0.6) : AppColors.textSecondary),
                     ),
                   ),
                 ),

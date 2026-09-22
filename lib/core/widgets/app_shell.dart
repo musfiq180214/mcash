@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../navigation/app_routes.dart';
+import '../services/haptic_service.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
+import 'glass_card.dart';
 
 /// Persistent bottom navigation. Four destinations keep their own stack via
 /// [StatefulNavigationShell]; the raised QR button is an action, not a tab, so
@@ -22,48 +24,68 @@ class AppShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: navigationShell,
       extendBody: true,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
-        height: 56,
-        width: 56,
-        decoration: const BoxDecoration(
-          gradient: AppColors.brandGradient,
+        height: 60,
+        width: 60,
+        decoration: BoxDecoration(
+          gradient: AppColors.cyberGradient,
           shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.cyberBlue.withOpacity(0.4),
+              blurRadius: 15,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
         child: Material(
           color: Colors.transparent,
           shape: const CircleBorder(),
           child: InkWell(
             customBorder: const CircleBorder(),
-            onTap: () => context.push(AppRoutes.qrPay),
+            onTap: () {
+              HapticService.medium();
+              context.push(AppRoutes.qrPay);
+            },
             child: const Icon(
               Icons.qr_code_scanner_rounded,
               color: Colors.white,
-              size: 26,
+              size: 28,
             ),
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.surface,
-          border: Border(top: BorderSide(color: AppColors.border)),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg,
+          0,
+          AppSpacing.lg,
+          AppSpacing.lg,
         ),
-        child: SafeArea(
-          top: false,
-          child: SizedBox(
-            height: 62,
-            child: Row(
-              children: [
-                _tab(context, _destinations[0]),
-                _tab(context, _destinations[1]),
-                const SizedBox(width: 64),
-                _tab(context, _destinations[2]),
-                _tab(context, _destinations[3]),
-              ],
+        child: GlassCard(
+          borderRadius: AppSpacing.pill,
+          opacity: 0.1,
+          blur: 20,
+          child: SafeArea(
+            top: false,
+            child: SizedBox(
+              height: 64,
+              child: Row(
+                children: [
+                  _tab(context, _destinations[0]),
+                  _tab(context, _destinations[1]),
+                  const SizedBox(width: 64),
+                  _tab(context, _destinations[2]),
+                  _tab(context, _destinations[3]),
+                ],
+              ),
             ),
           ),
         ),
@@ -73,27 +95,48 @@ class AppShell extends StatelessWidget {
 
   Widget _tab(BuildContext context, _Destination destination) {
     final isActive = navigationShell.currentIndex == destination.branch;
-    final color = isActive ? AppColors.primary : AppColors.textTertiary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final color = isActive
+        ? AppColors.cyberBlue
+        : (isDark ? Colors.white.withOpacity(0.5) : AppColors.textTertiary);
 
     return Expanded(
       child: InkWell(
-        onTap: () => navigationShell.goBranch(
-          destination.branch,
-          initialLocation: destination.branch == navigationShell.currentIndex,
-        ),
+        onTap: () {
+          HapticService.light();
+          navigationShell.goBranch(
+            destination.branch,
+            initialLocation: destination.branch == navigationShell.currentIndex,
+          );
+        },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(destination.icon, size: 22, color: color),
-            const SizedBox(height: AppSpacing.xs),
+            AnimatedScale(
+              scale: isActive ? 1.2 : 1.0,
+              duration: const Duration(milliseconds: 200),
+              child: Icon(destination.icon, size: 24, color: color),
+            ),
+            const SizedBox(height: 4),
             Text(
               destination.label,
               style: TextStyle(
-                fontSize: 10.5,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                fontSize: 10,
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                 color: color,
+                letterSpacing: 0.2,
               ),
             ),
+            if (isActive)
+              Container(
+                margin: const EdgeInsets.only(top: 4),
+                height: 3,
+                width: 3,
+                decoration: const BoxDecoration(
+                  color: AppColors.cyberBlue,
+                  shape: BoxShape.circle,
+                ),
+              ),
           ],
         ),
       ),

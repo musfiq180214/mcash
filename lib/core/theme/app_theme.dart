@@ -99,6 +99,61 @@ class AppTheme {
     );
   }
 
+  static ThemeData get dark {
+    final base = ThemeData.dark(useMaterial3: true);
+
+    return base.copyWith(
+      scaffoldBackgroundColor: AppColors.cyberNavy,
+      colorScheme: base.colorScheme.copyWith(
+        primary: AppColors.cyberBlue,
+        secondary: AppColors.cyberViolet,
+        surface: Colors.white.withOpacity(0.05),
+        error: AppColors.danger,
+      ),
+      textTheme: base.textTheme.apply(
+        bodyColor: Colors.white,
+        displayColor: Colors.white,
+      ),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.white),
+        titleTextStyle: AppTypography.screenTitle,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+      ),
+      cardTheme: CardThemeData(
+        color: Colors.white.withOpacity(0.05),
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+          side: BorderSide(color: Colors.white.withOpacity(0.1)),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.05),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.lg,
+        ),
+        hintStyle: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 14),
+        border: _fieldBorder(Colors.white.withOpacity(0.1)),
+        enabledBorder: _fieldBorder(Colors.white.withOpacity(0.1)),
+        focusedBorder: _fieldBorder(AppColors.cyberBlue, width: 1.4),
+        errorBorder: _fieldBorder(AppColors.danger),
+        focusedErrorBorder: _fieldBorder(AppColors.danger, width: 1.4),
+      ),
+      dividerTheme: DividerThemeData(
+        color: Colors.white.withOpacity(0.1),
+        thickness: 1,
+        space: 1,
+      ),
+    );
+  }
+
   static OutlineInputBorder _fieldBorder(Color color, {double width = 1}) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),

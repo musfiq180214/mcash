@@ -25,6 +25,7 @@ class SelectableTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accent = color ?? AppColors.primary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return InkWell(
       onTap: onTap,
@@ -36,10 +37,14 @@ class SelectableTile extends StatelessWidget {
           horizontal: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color: isSelected ? accent.withOpacity(0.08) : AppColors.surface,
+          color: isSelected
+              ? accent.withOpacity(0.08)
+              : Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(
-            color: isSelected ? accent : AppColors.border,
+            color: isSelected
+                ? accent
+                : (isDark ? Colors.white.withOpacity(0.1) : AppColors.border),
             width: isSelected ? 1.4 : 1,
           ),
         ),
@@ -53,18 +58,18 @@ class SelectableTile extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 11.5,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: isDark ? Colors.white : AppColors.textPrimary,
               ),
             ),
             if (subLabel != null)
               Text(
                 subLabel!,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 10,
-                  color: AppColors.textTertiary,
+                  color: isDark ? Colors.white54 : AppColors.textTertiary,
                 ),
               ),
           ],
@@ -95,6 +100,9 @@ class NavigationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = isDark ? AppColors.cyberBlue : AppColors.primary;
+
     return Material(
       color: Colors.transparent,
       child: ListTile(
@@ -104,32 +112,32 @@ class NavigationTile extends StatelessWidget {
           height: 38,
           width: 38,
           decoration: BoxDecoration(
-            color: (iconColor ?? AppColors.primary).withOpacity(0.1),
+            color: (iconColor ?? primaryColor).withOpacity(0.1),
             borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           ),
-          child: Icon(icon, size: 19, color: iconColor ?? AppColors.primary),
+          child: Icon(icon, size: 19, color: iconColor ?? primaryColor),
         ),
         title: Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
+            color: isDark ? Colors.white : AppColors.textPrimary,
           ),
         ),
         subtitle: subtitle == null
             ? null
             : Text(
                 subtitle!,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
-                  color: AppColors.textSecondary,
+                  color: isDark ? Colors.white70 : AppColors.textSecondary,
                 ),
               ),
         trailing: trailing ??
-            const Icon(
+            Icon(
               Icons.chevron_right_rounded,
-              color: AppColors.textTertiary,
+              color: isDark ? Colors.white38 : AppColors.textTertiary,
             ),
       ),
     );
