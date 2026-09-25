@@ -52,6 +52,8 @@ class _Chip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppSpacing.pill),
@@ -60,10 +62,14 @@ class _Chip extends StatelessWidget {
         height: 38,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.field,
+          color: isSelected
+              ? (isDark ? AppColors.cyberBlue : AppColors.primary)
+              : (isDark ? Colors.white.withOpacity(0.08) : AppColors.field),
           borderRadius: BorderRadius.circular(AppSpacing.pill),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.border,
+            color: isSelected
+                ? (isDark ? AppColors.cyberBlue : AppColors.primary)
+                : (isDark ? Colors.white.withOpacity(0.15) : AppColors.border),
           ),
         ),
         child: FittedBox(
@@ -74,7 +80,9 @@ class _Chip extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: isSelected ? Colors.white : AppColors.textSecondary,
+                color: isSelected
+                    ? Colors.white
+                    : (isDark ? Colors.white70 : AppColors.textSecondary),
               ),
             ),
           ),

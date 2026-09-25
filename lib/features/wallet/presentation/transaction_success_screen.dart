@@ -17,6 +17,8 @@ class TransactionSuccessScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -40,29 +42,31 @@ class TransactionSuccessScreen extends StatelessWidget {
               const SizedBox(height: AppSpacing.xl),
               Text(
                 '${transaction.type.label} successful',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
+                  color: isDark ? Colors.white : AppColors.textPrimary,
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 Formatters.money(transaction.amount),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.8,
-                  color: AppColors.primary,
+                  color: isDark ? AppColors.cyberBlue : AppColors.primary,
                 ),
               ),
               const SizedBox(height: AppSpacing.xl),
               Container(
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
+                  color: isDark ? Colors.white.withOpacity(0.05) : AppColors.surface,
                   borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                  border: Border.all(color: AppColors.border),
+                  border: Border.all(
+                    color: isDark ? Colors.white.withOpacity(0.1) : AppColors.border,
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -113,6 +117,8 @@ class _Row extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -120,19 +126,19 @@ class _Row extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
-              color: AppColors.textSecondary,
+              color: isDark ? Colors.white70 : AppColors.textSecondary,
             ),
           ),
           Flexible(
             child: Text(
               value,
               textAlign: TextAlign.right,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: isDark ? Colors.white : AppColors.textPrimary,
               ),
             ),
           ),

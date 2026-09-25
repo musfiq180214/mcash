@@ -58,6 +58,7 @@ class _TopUpWalletScreenState extends ConsumerState<TopUpWalletScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(topUpProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Top Up Wallet')),
@@ -67,7 +68,12 @@ class _TopUpWalletScreenState extends ConsumerState<TopUpWalletScreen> {
           child: ListView(
             padding: const EdgeInsets.all(AppSpacing.lg),
             children: [
-              const Text('Select method', style: AppTypography.sectionTitle),
+              Text(
+                'Select method',
+                style: isDark
+                    ? AppTypography.sectionTitle.copyWith(color: Colors.white)
+                    : AppTypography.sectionTitle,
+              ),
               const SizedBox(height: AppSpacing.md),
               SectionCard(
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
@@ -77,7 +83,7 @@ class _TopUpWalletScreenState extends ConsumerState<TopUpWalletScreen> {
                       RadioListTile<String>(
                         value: method.id,
                         groupValue: state.method.id,
-                        activeColor: AppColors.primary,
+                        activeColor: isDark ? AppColors.cyberBlue : AppColors.primary,
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: AppSpacing.md,
                         ),
@@ -90,10 +96,10 @@ class _TopUpWalletScreenState extends ConsumerState<TopUpWalletScreen> {
                             const SizedBox(width: AppSpacing.md),
                             Text(
                               method.name,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.textPrimary,
+                                color: isDark ? Colors.white : AppColors.textPrimary,
                               ),
                             ),
                           ],

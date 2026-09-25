@@ -170,6 +170,7 @@ class _ContactsListState extends State<ContactsList> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final filteredContacts = _contacts.where((contact) {
       final nameMatch =
           contact.name.toLowerCase().contains(_searchQuery.toLowerCase());
@@ -190,7 +191,12 @@ class _ContactsListState extends State<ContactsList> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(widget.title, style: AppTypography.sectionTitle),
+                Text(
+                  widget.title,
+                  style: isDark
+                      ? AppTypography.sectionTitle.copyWith(color: Colors.white)
+                      : AppTypography.sectionTitle,
+                ),
                 if (!_permissionGranted)
                   TextButton.icon(
                     onPressed: () =>
@@ -201,7 +207,7 @@ class _ContactsListState extends State<ContactsList> {
                       style: TextStyle(fontSize: 12),
                     ),
                     style: TextButton.styleFrom(
-                      foregroundColor: AppColors.primary,
+                      foregroundColor: isDark ? AppColors.cyberBlue : AppColors.primary,
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppSpacing.sm,
                         vertical: 0,
@@ -212,9 +218,9 @@ class _ContactsListState extends State<ContactsList> {
                 else
                   Text(
                     '${_contacts.length} contacts',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.textSecondary,
+                      color: isDark ? Colors.white70 : AppColors.textSecondary,
                     ),
                   ),
               ],
@@ -227,6 +233,10 @@ class _ContactsListState extends State<ContactsList> {
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Search contact or number...',
+                hintStyle: const TextStyle(
+                  color: AppColors.textTertiary,
+                  fontSize: 13,
+                ),
                 prefixIcon: const Icon(
                   Icons.search_rounded,
                   size: 20,
@@ -234,7 +244,7 @@ class _ContactsListState extends State<ContactsList> {
                 ),
                 suffixIcon: _searchQuery.isNotEmpty
                     ? IconButton(
-                        icon: const Icon(Icons.clear_rounded, size: 18),
+                        icon: const Icon(Icons.clear_rounded, size: 18, color: AppColors.textTertiary),
                         onPressed: () {
                           _searchController.clear();
                           setState(() => _searchQuery = '');
@@ -260,7 +270,10 @@ class _ContactsListState extends State<ContactsList> {
                 filled: true,
                 fillColor: AppColors.field,
               ),
-              style: const TextStyle(fontSize: 13),
+              style: const TextStyle(
+                fontSize: 13,
+                color: Colors.black,
+              ),
               onChanged: (value) {
                 setState(() {
                   _searchQuery = value;
@@ -281,13 +294,13 @@ class _ContactsListState extends State<ContactsList> {
               ),
             )
           else if (displayedContacts.isEmpty)
-            const Padding(
-              padding: EdgeInsets.all(AppSpacing.lg),
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
               child: Center(
                 child: Text(
                   'No contacts found',
                   style: TextStyle(
-                    color: AppColors.textSecondary,
+                    color: isDark ? Colors.white70 : AppColors.textSecondary,
                     fontSize: 13,
                   ),
                 ),
@@ -298,8 +311,8 @@ class _ContactsListState extends State<ContactsList> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: displayedContacts.length,
-              separatorBuilder: (context, index) => const Divider(
-                color: AppColors.border,
+              separatorBuilder: (context, index) => Divider(
+                color: isDark ? Colors.white.withOpacity(0.1) : AppColors.border,
                 height: 1,
                 indent: 70,
               ),
@@ -313,12 +326,14 @@ class _ContactsListState extends State<ContactsList> {
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                   leading: CircleAvatar(
-                    backgroundColor: AppColors.primarySoft,
+                    backgroundColor: isDark
+                        ? AppColors.cyberBlue.withOpacity(0.2)
+                        : AppColors.primarySoft,
                     radius: 20,
                     child: Text(
                       contact.initial,
-                      style: const TextStyle(
-                        color: AppColors.primary,
+                      style: TextStyle(
+                        color: isDark ? AppColors.cyberBlue : AppColors.primary,
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
                       ),
@@ -326,23 +341,23 @@ class _ContactsListState extends State<ContactsList> {
                   ),
                   title: Text(
                     contact.name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                      color: isDark ? Colors.white : AppColors.textPrimary,
                     ),
                   ),
                   subtitle: Text(
                     contact.phoneNumber,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.textSecondary,
+                      color: isDark ? Colors.white70 : AppColors.textSecondary,
                     ),
                   ),
-                  trailing: const Icon(
+                  trailing: Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 14,
-                    color: AppColors.textTertiary,
+                    color: isDark ? Colors.white38 : AppColors.textTertiary,
                   ),
                 );
               },
@@ -353,9 +368,9 @@ class _ContactsListState extends State<ContactsList> {
                 child: Center(
                   child: Text(
                     'Showing first $maxItems of ${filteredContacts.length} contacts. Search above for more.',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
-                      color: AppColors.textTertiary,
+                      color: isDark ? Colors.white54 : AppColors.textTertiary,
                     ),
                   ),
                 ),

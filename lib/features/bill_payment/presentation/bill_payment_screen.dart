@@ -60,6 +60,7 @@ class _BillPaymentScreenState extends ConsumerState<BillPaymentScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(billPaymentProvider);
     final balance = ref.watch(balanceProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Bill Payment')),
@@ -98,22 +99,37 @@ class _BillPaymentScreenState extends ConsumerState<BillPaymentScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Select provider', style: AppTypography.label),
+                    Text(
+                      'Select provider',
+                      style: AppTypography.label.copyWith(
+                        color: isDark ? Colors.white70 : AppColors.textSecondary,
+                      ),
+                    ),
                     const SizedBox(height: AppSpacing.sm),
                     DropdownButtonFormField<String>(
                       value: state.provider,
                       isExpanded: true,
-                      icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                      style: const TextStyle(
+                      icon: Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: isDark ? Colors.white70 : AppColors.textSecondary,
+                      ),
+                      dropdownColor:
+                          isDark ? AppColors.cyberNavy : AppColors.surface,
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
-                        color: AppColors.textPrimary,
+                        color: isDark ? Colors.white : AppColors.textPrimary,
                       ),
                       items: [
                         for (final provider in state.category.providers)
                           DropdownMenuItem(
                             value: provider,
-                            child: Text('$provider (${state.category.name})'),
+                            child: Text(
+                              '$provider (${state.category.name})',
+                              style: TextStyle(
+                                color: isDark ? Colors.white : AppColors.textPrimary,
+                              ),
+                            ),
                           ),
                       ],
                       onChanged: (value) {

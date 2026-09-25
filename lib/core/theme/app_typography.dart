@@ -20,25 +20,21 @@ class AppTypography {
     fontSize: 22,
     fontWeight: FontWeight.w700,
     letterSpacing: -0.4,
-    color: AppColors.textPrimary,
   );
 
   static const TextStyle screenTitle = TextStyle(
     fontSize: 17,
     fontWeight: FontWeight.w600,
-    color: AppColors.textPrimary,
   );
 
   static const TextStyle sectionTitle = TextStyle(
     fontSize: 15,
     fontWeight: FontWeight.w600,
-    color: AppColors.textPrimary,
   );
 
   static const TextStyle body = TextStyle(
     fontSize: 14,
     height: 1.4,
-    color: AppColors.textPrimary,
   );
 
   static const TextStyle label = TextStyle(

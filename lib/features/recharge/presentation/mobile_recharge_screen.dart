@@ -66,6 +66,7 @@ class _MobileRechargeScreenState extends ConsumerState<MobileRechargeScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(rechargeProvider);
     final balance = ref.watch(balanceProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Mobile Recharge')),
@@ -83,7 +84,12 @@ class _MobileRechargeScreenState extends ConsumerState<MobileRechargeScreen> {
                     .selectConnection(ConnectionType.values[index]),
               ),
               const SizedBox(height: AppSpacing.xl),
-              const Text('Select operator', style: AppTypography.sectionTitle),
+              Text(
+                'Select operator',
+                style: isDark
+                    ? AppTypography.sectionTitle.copyWith(color: Colors.white)
+                    : AppTypography.sectionTitle,
+              ),
               const SizedBox(height: AppSpacing.md),
               GridView.builder(
                 shrinkWrap: true,

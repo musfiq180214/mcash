@@ -66,6 +66,7 @@ class _CashOutScreenState extends ConsumerState<CashOutScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(cashOutProvider);
     final balance = ref.watch(balanceProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Cash Out')),
@@ -75,7 +76,12 @@ class _CashOutScreenState extends ConsumerState<CashOutScreen> {
           child: ListView(
             padding: const EdgeInsets.all(AppSpacing.lg),
             children: [
-              const Text('Select agent', style: AppTypography.sectionTitle),
+              Text(
+                'Select agent',
+                style: isDark
+                    ? AppTypography.sectionTitle.copyWith(color: Colors.white)
+                    : AppTypography.sectionTitle,
+              ),
               const SizedBox(height: AppSpacing.md),
               Row(
                 children: [
@@ -210,24 +216,32 @@ class _FeeSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.primarySoft,
+        color: isDark ? Colors.white.withOpacity(0.05) : AppColors.primarySoft,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: isDark ? Border.all(color: Colors.white.withOpacity(0.1)) : null,
       ),
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Cash out fee', style: AppTypography.label),
+              Text(
+                'Cash out fee',
+                style: AppTypography.label.copyWith(
+                  color: isDark ? Colors.white70 : AppColors.textSecondary,
+                ),
+              ),
               Text(
                 Formatters.money(fee),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  color: isDark ? Colors.white : AppColors.textPrimary,
                 ),
               ),
             ],
@@ -236,20 +250,20 @@ class _FeeSummary extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Total deducted',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  color: isDark ? Colors.white : AppColors.textPrimary,
                 ),
               ),
               Text(
                 Formatters.money(total),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.primary,
+                  color: isDark ? AppColors.cyberBlue : AppColors.primary,
                 ),
               ),
             ],

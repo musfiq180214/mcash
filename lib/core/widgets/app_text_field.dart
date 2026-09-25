@@ -41,10 +41,17 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppTypography.label),
+        Text(
+          label,
+          style: AppTypography.label.copyWith(
+            color: isDark ? Colors.white70 : AppColors.textSecondary,
+          ),
+        ),
         const SizedBox(height: AppSpacing.sm),
         TextFormField(
           controller: controller,
@@ -56,10 +63,10 @@ class AppTextField extends StatelessWidget {
           maxLength: maxLength,
           inputFormatters: inputFormatters,
           textCapitalization: textCapitalization,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w500,
-            color: AppColors.textPrimary,
+            color: isDark ? Colors.white : AppColors.textPrimary,
           ),
           decoration: InputDecoration(
             hintText: hint,
@@ -74,10 +81,10 @@ class AppTextField extends StatelessWidget {
                     ),
                     child: Text(
                       prefixText!,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textSecondary,
+                        color: isDark ? Colors.white70 : AppColors.textSecondary,
                       ),
                     ),
                   ),
